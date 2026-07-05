@@ -26,7 +26,7 @@ This scan confirmed:
 - Its response latency
 - Its MAC address, which confirmed the target was a VirtualBox VM
 
-**Starting with -sn is the standard first step in network scanning. It acts like a quick roll call, checking only if a device is powered on and connected. Because it doesn't knock on every door (port), it is incredibly fast and quiet enough to avoid setting off standard security alarms.
+**Using -sn is the standard opening move in network reconnaissance. It focuses strictly on host discovery, making it the fastest way to map live targets. By skipping port scanning entirely, it minimizes packet traffic, keeps the footprint quiet, and reduces the likelihood of triggering security alerts.
 
 **MAC prefix reference:**
 
