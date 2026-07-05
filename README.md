@@ -1,11 +1,11 @@
 # Metasploitable Recon — Task: Full Network Reconnaissance
 
-## Legal Notice
+## ⚠️ Legal Notice
 This project was conducted exclusively against **Metasploitable**, a deliberately vulnerable virtual machine built for security training in an isolated home lab. All scans were performed against a system I own and control — no external or third-party systems were involved.
 
 The techniques documented here (host discovery, port scanning, service enumeration) should only ever be run against systems you own or have explicit written authorization to test. Scanning systems without permission may be illegal in your jurisdiction.
 
-## Objective
+## 🎯 Objective
 Perform a complete reconnaissance pass against a Metasploitable VM using Nmap, covering host discovery, TCP/UDP port scanning, and advanced scan techniques (FIN, NULL, XMAS, ACK) to understand what each method reveals to a pen tester.
 
 ## Repository Structure
@@ -15,7 +15,7 @@ Metasploitable-Recon/
 └── report.md      → Full technical breakdown, findings, and risk analysis
 ```
 
-## Tools Used
+## 🛠 Tools Used
 - Nmap (host discovery, TCP/UDP scanning, advanced scan types)
 - Oracle VirtualBox (Metasploitable target VM)
 
@@ -41,4 +41,4 @@ Metasploitable-Recon/
    sudo nmap -sA <target-ip>       # ACK
    ```
 
-See `report.md` for full results, findings, and risk analysis.
+See 👉 `report.md` for full results, findings, and risk analysis.
