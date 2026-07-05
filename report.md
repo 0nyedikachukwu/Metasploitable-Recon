@@ -35,7 +35,7 @@ This scan confirmed:
 | 08:00:27 | Oracle VirtualBox |
 | 00:50:56 | VMware |
 | B8:27:EB | Raspberry Pi |
-| 00:1A:2B | Cisco |
+| 00:00:0C | Cisco |
 | 3C:22:FB | Apple |
 
 Recognizing these prefixes matters in real engagements: a Cisco MAC points to a router or switch, an Apple MAC to a Mac or iPhone, and a VMware/VirtualBox MAC to a virtual machine — narrowing down likely targets and exploits before a single port is scanned.
