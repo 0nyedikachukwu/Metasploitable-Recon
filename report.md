@@ -26,7 +26,7 @@ This scan confirmed:
 - Its response latency
 - Its MAC address, which confirmed the target was a VirtualBox VM
 
-**Why `-sn` first:** it's the fastest way to confirm a target is alive, sends only 1–2 packets (keeping the scan quiet and unlikely to trigger alerts), and is the standard opening move in any reconnaissance.
+**Starting with -sn is the standard first step in network scanning. It acts like a quick roll call, checking only if a device is powered on and connected. Because it doesn't knock on every door (port), it is incredibly fast and quiet enough to avoid setting off standard security alarms.
 
 **MAC prefix reference:**
 
