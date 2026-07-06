@@ -11,8 +11,16 @@ Perform a complete reconnaissance pass against a Metasploitable VM using Nmap, c
 ## Repository Structure
 ```
 Metasploitable-Recon/
-├── README.md      → Overview, setup, and how to reproduce the scans
-└── report.md      → Full technical breakdown, findings, and risk analysis
+├── README.md        → Overview, setup, and how to reproduce the scans
+├── report.md        → Full technical breakdown, findings, and risk analysis
+└── screenshots/      → Terminal output for each scan, referenced in report.md
+    ├── syn_scan.png
+    ├── connect_scan.png
+    ├── udp_scan.png
+    ├── fin_scan.png
+    ├── null_scan.png
+    ├── xmas_scan.png
+    └── ack_scan.png
 ```
 
 ## 🛠 Tools Used
@@ -41,4 +49,4 @@ Metasploitable-Recon/
    sudo nmap -sA <target-ip>       # ACK
    ```
 
-See 👉 `report.md` for full results, findings, and risk analysis.
+See 👉 `REPORT.md` for full results, findings, and risk analysis.
