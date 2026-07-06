@@ -43,6 +43,9 @@ Recognizing these prefixes matters in real engagements: a Cisco MAC points to a 
 ### 2. TCP SYN Scan
 Running `SUDO Nmap -sS -p- 192.168.*.**` revealed 30 open TCP ports on the target. Every open port is a potential entry point — one of them, FTP, had already been exploited using the known vsftpd 2.3.4 backdoor.
 
+![SYN scan results](screenshots/syn_scan.png)
+*SYN scan output showing 30 open TCP ports, including the vulnerable FTP service.*
+
 SYN scans are generally preferred because they're faster than a full connect scan, stealthier (the handshake is never completed), and act as a reliable, universal TCP port checker.
 
 ### 3. TCP Connect Scan
@@ -51,6 +54,9 @@ A Connect scan (`SUDO Nmap -sT -p- 192.168.*.**`) returned the same open ports a
 - It was noticeably slower.
 - It was louder, since it completes the full three-way handshake during scanning.
 
+![Connect scan results](screenshots/connect_scan.png)
+*Connect scan confirming the same 30 open ports as the SYN scan.*
+
 ### 4. UDP Scan
 A UDP scan (`SUDO Nmap -sV --top-ports 100 192.168.*.**`) returned:
 
@@ -58,8 +64,14 @@ A UDP scan (`SUDO Nmap -sV --top-ports 100 192.168.*.**`) returned:
 - 4 ports open: **53** (DNS), **111** (RPC bind), **137** (NetBIOS Name Service), **2049** (NFS)
 - 3 ports open/filtered: **68** (DHCP), **69** (TFTP), **138** (NetBIOS Datagram)
 
+![UDP scan results](screenshots/udp_scan.png)
+*UDP scan showing open DNS, RPC, NetBIOS, and NFS services.*
+
 ### 5. Advanced Scan Techniques
 Comparing a full-port FIN scan (`SUDO Nmap -sF -p- 192.168.*.**`) against a targeted one (`SUDO Nmap -sF -p 21,22,80 192.168.*.**`) showed a clear difference: the full-port version marked every port as ignored, most likely because sending 65,535 packets in rapid succession overwhelmed the target and caused packet loss. The targeted scan, sending far fewer packets, correctly returned open/filtered results consistent with RFC793 behavior.
+
+![FIN scan results](screenshots/fin_scan.png)
+*FIN scan showing open|filtered results across scanned ports.*
 
 **Conclusion:** FIN scans are unreliable across a full port range and only dependable when aimed at specific ports.
 
@@ -68,9 +80,18 @@ A NULL scan (`SUDO Nmap -sN 192.168.*.**`) produced the same open/filtered ambig
 - Hint at the target's OS: Linux/Unix/BSD systems tend to return open/filtered, while Windows systems tend to return all-closed.
 - Reveal firewall behavior: an open/filtered result suggests a firewall silently dropping packets, while a closed result (RST returned) means no firewall is present on that port.
 
+![NULL scan results](screenshots/null_scan.png)
+*NULL scan showing the same open|filtered ambiguity as the FIN scan.*
+
 An XMAS scan (`SUDO Nmap -sX 192.168.*.**`) behaved the same way as FIN: the full-port version returned an ignored state, while targeting specific ports produced a stable open/filtered result. XMAS scans send the FIN, PSH, and URG flags simultaneously, which is what triggers this ambiguous response under RFC793.
 
-Finally, an ACK scan (`SUDO Nmap -sA 192.168.*.**`) returned **unfiltered** across every port tested — meaning nothing on the network is filtering traffic to this host at all. In this lab environment, Metasploitable is completely exposed at the network level.
+![XMAS scan results](screenshots/xmas_scan.png)
+*XMAS scan output, consistent with the FIN and NULL scan results.*
+
+Finally, an ACK scan (`SUDO Nmap -sA 192.168.*.**`) returned all 1000 scanned ports in an **ignored state** rather than a clear unfiltered result. This means the target's responses were likely dropped or rate-limited during the scan, so filtering status could not be conclusively determined from this run — a retest with adjusted timing would be needed to get a reliable result.
+
+![ACK scan results](screenshots/ack_scan.png)
+*ACK scan showing all 1000 ports in an ignored state — inconclusive, not a confirmed "unfiltered" result.*
 
 ## Findings
 
@@ -90,7 +111,7 @@ Finally, an ACK scan (`SUDO Nmap -sA 192.168.*.**`) returned **unfiltered** acro
 | FIN | Open/filtered only | ⚠️ Ambiguous |
 | NULL | Cannot confirm open ports | ⚠️ Ambiguous |
 | XMAS | Open/filtered only | ⚠️ Ambiguous |
-| ACK | Shows unfiltered, not open/closed | ⚠️ Different purpose |
+| ACK | Returned ignored/no-response (inconclusive in this run) | ⚠️ Retest needed |
 
 ## Risks & Mitigation
 
@@ -98,10 +119,10 @@ Finally, an ACK scan (`SUDO Nmap -sA 192.168.*.**`) returned **unfiltered** acro
 |---|---|---|
 | FTP (port 21) running vsftpd 2.3.4 | Known backdoor vulnerability — direct remote code execution | Patch/upgrade FTP service; disable if not required |
 | 30 open TCP ports on one host | Large attack surface — every open port is a potential entry point | Close unused services; apply least-privilege network exposure |
-| ACK scan returned fully unfiltered | No firewall is filtering traffic at all — host is directly reachable on every port | Deploy host-based or network firewall rules; restrict by IP/service |
+| ACK scan returned ignored/no-response on all ports | Result is inconclusive — could indicate rate-limiting rather than an actual firewall state | Retest with adjusted timing (`-T2`/`-T1`) or a smaller port range to get a conclusive filtered/unfiltered result |
 | NetBIOS (137/138) and RPC bind (111) exposed | Legacy protocols with a history of enumeration and exploitation | Disable legacy services where not needed; segment on the network |
 | NFS (2049) exposed | Misconfigured NFS shares can leak or allow modification of files | Restrict NFS exports to trusted hosts; enforce authentication |
 | Full-port FIN/NULL/XMAS scans caused rate-limiting artifacts | Shows the target/network can be destabilized by aggressive scanning | Rate-limit scanning in real engagements; prefer targeted scans over full-port sweeps for accuracy |
 
 ## Conclusion
-SYN and Connect scans gave the most reliable results; FIN, NULL, and XMAS were only reliable when targeting specific ports rather than the full range. The ACK scan confirmed there is no firewall filtering on this host, and several exposed services (FTP, NetBIOS, RPC, NFS) represent real risk if this configuration existed outside a lab environment. Good recon practice means starting quiet (`-sn`, SYN), scaling up only as needed, and always tying findings back to concrete risk and mitigation — not just a list of open ports.
+SYN and Connect scans gave the most reliable results; FIN, NULL, and XMAS were only reliable when targeting specific ports rather than the full range. The ACK scan returned an inconclusive, ignored result rather than confirming filtering status, likely due to rate-limiting during the scan, and would need a retest. Several exposed services (FTP, NetBIOS, RPC, NFS) represent real risk if this configuration existed outside a lab environment. Good recon practice means starting quiet (`-sn`, SYN), scaling up only as needed, and always tying findings back to concrete risk and mitigation — not just a list of open ports.
