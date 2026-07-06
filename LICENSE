@@ -19,18 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-Important Notice:
-
-This repository documents a network reconnaissance exercise performed against
-Metasploitable, a deliberately vulnerable virtual machine, for EDUCATIONAL and
-AUTHORIZED SECURITY TESTING purposes only.
-
-- The techniques and findings described here should only be applied to systems
-  You own or have explicit written authorization to test.
-- Unauthorized scanning, enumeration, or exploitation of systems you do not own
-  Control may violate computer misuse laws in your jurisdiction.
-- The author assumes no liability for any misuse of the information contained
-  in this repository.
-- This project is intended to demonstrate learning and understanding of
-  reconnaissance concepts, not to serve as an attack tool.
