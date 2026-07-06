@@ -58,7 +58,7 @@ A Connect scan (`SUDO Nmap -sT -p- 192.168.*.**`) returned the same open ports a
 *Connect scan confirming the same 30 open ports as the SYN scan.*
 
 ### 4. UDP Scan
-A UDP scan (`SUDO Nmap -sV --top-ports 100 192.168.*.**`) returned:
+A UDP scan (`SUDO Nmap -sU --top-ports 100 192.168.*.**`) returned:
 
 - 93 ports closed (ICMP port-unreachable — confirming nothing was listening)
 - 4 ports open: **53** (DNS), **111** (RPC bind), **137** (NetBIOS Name Service), **2049** (NFS)
